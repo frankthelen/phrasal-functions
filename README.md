@@ -114,9 +114,13 @@ It's simply a shorthand for, e.g., `{ key: 'say', values: ['say'] }`.
 
 ### Async functions
 
-That just works. Simply provide an async function and return a promise:
+Simply provide an `async` function that returns a promise and use `await` to call the function:
 ```javascript
+const my = phrasal({
   fn: async () => Promise.resolve(...),
+  ...
+});
+await my.phrasal.fun();
 ```
 
 ### Multiple paths [TODO]
