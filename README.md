@@ -2,7 +2,6 @@
 
 Functions with chained, fluent options.
 Decorate existing objects (proxy).
-Dynamic options (context-specific) and multiple paths.
 
 [![Build Status](https://travis-ci.org/frankthelen/phrasal-functions.svg?branch=master)](https://travis-ci.org/frankthelen/phrasal-functions)
 [![Coverage Status](https://coveralls.io/repos/github/frankthelen/phrasal-functions/badge.svg?branch=master)](https://coveralls.io/github/frankthelen/phrasal-functions?branch=master)
