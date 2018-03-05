@@ -61,7 +61,7 @@ describe('phrasal-functions', () => {
   });
 
   describe('proxy', () => {
-    it('should proxy object and bind implicitly / fix option', () => {
+    it('should proxy object and bind implicitly to "this" / fix option', () => {
       class TestClass {
         constructor() {
           this.foo = true;
@@ -101,6 +101,22 @@ describe('phrasal-functions', () => {
         ],
       });
       expect(pxy.foo).to.be.equal('baz');
+    });
+
+    it('should proxy object but prefer own function', () => {
+      class TestClass {
+        constructor() {
+          this.foo = () => 'baz';
+        }
+      }
+      const obj = new TestClass();
+      const pxy = proxy(obj, {
+        fn: () => {},
+        path: [
+          { key: 'foo' },
+        ],
+      });
+      expect(pxy.foo()).to.be.equal('baz');
     });
   });
 });
