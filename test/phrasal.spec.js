@@ -58,6 +58,24 @@ describe('phrasal-functions', () => {
       expect(args).to.be.deep.equal([{ party: true }]);
       expect(bind).to.be.deep.equal({ foo: true, make: {} });
     });
+
+    it('should create values dynamically if values is a function', () => {
+      const my = phrasal({
+        fn: (options, ...args) => [options, args],
+        path: [
+          { key: 'animal', values: ['dog', 'cat'] },
+          { key: 'is' },
+          { key: 'action',
+            values: ({ animal }) =>
+              (animal === 'dog' ? ['barking', 'chewing', 'playing'] : ['purring', 'playing']) },
+        ],
+      });
+      const [options] = my.dog.is.chewing();
+      expect(options).to.be.deep.equal({ animal: 'dog', is: 'is', action: 'chewing' });
+      const [options2] = my.cat.is.purring();
+      expect(options2).to.be.deep.equal({ animal: 'cat', is: 'is', action: 'purring' });
+      expect(() => my.dog.is.purring()).to.throw(Error);
+    });
   });
 
   describe('proxy', () => {
@@ -85,6 +103,21 @@ describe('phrasal-functions', () => {
       expect(options).to.be.deep.equal({ make: 'make', who: 'my', what: 'day' });
       expect(args).to.be.deep.equal([{ party: true }]);
       expect(bind).to.be.deep.equal({ foo: true });
+    });
+
+    it('should proxy object and bind implicitly to "this" / fix option / 2', () => {
+      const obj = { name: 'John' };
+      const john = proxy(obj, {
+        fn: function (options, arg) { // eslint-disable-line object-shorthand, func-names
+          return { who: this.name, ...options, ...arg };
+        },
+        path: [
+          { key: 'say' },
+          { key: 'what', values: ['hello', 'goodbye', 'boo'] },
+        ],
+      });
+      const result = john.say.goodbye({ to: 'Joe' });
+      expect(result).to.be.deep.equal({ who: 'John', say: 'say', what: 'goodbye', to: 'Joe' });
     });
 
     it('should proxy object but prefer own property', () => {

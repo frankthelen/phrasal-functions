@@ -54,12 +54,69 @@ const make = phrasal({
 });
 
 const result = make.my.day({ party: true });
-console.log(result);
 // -> { who: 'my', what: 'day', party: true, foo: 'baz' }
 ```
 
 ### Decoration (Proxy)
-### Dynamic options [TODO]
+
+You can also decorate (proxy) an existing object with a new phrasal function.
+Use `proxy` for that purpose.
+The function `fn` will implicitly have `this` bound to the proxied object.
+To explicitly change this, provide a `bind` property with the desired object.
+
+```javascript
+const { proxy } = require('phrasal-functions');
+
+const johnObj = { name: 'John' };
+const john = proxy(johnObj, {
+  fn: function (options, arg) {
+    return { who: this.name, ...options, ...arg };
+  },
+  // bind: obj,
+  path: [
+    { key: 'say' },
+    { key: 'what', values: ['hello', 'goodbye', 'boo'] },
+  ],
+});
+
+const result = john.say.goodbye({ to: 'Joe' });
+// -> { who: 'John', say: 'say', what: 'goodbye', to: 'Joe' }
+```
+
+### Dynamic options
+
+In some cases, it is useful to create the syntax dynamically.
+This can be done by providing a function to `value` instead of an array of strings.
+The function, of course, has to return an array of strings.
+It gets the options as collected so far and has `this` bound properly (if applicable).
+
+```javascript
+const { phrasal } = require('phrasal-functions');
+
+const my = phrasal({
+  fn: (options, ...args) => { ... },
+  path: [
+    { key: 'animal', values: ['dog', 'cat'] },
+    { key: 'is' },
+    { key: 'action',
+      values: ({ animal }) =>
+        (animal === 'dog' ? ['barking', 'chewing', 'playing'] : ['purring', 'playing']) },
+  ],
+});
+my.dog.is.chewing();
+my.cat.is.purring();
+```
+
 ### Fix options
+
+`{ key: 'say' }` and `{ key: 'is' }` in the examples above are *fix options*.
+It's simply a shorthand for, e.g., `{ key: 'say', values: ['say'] }`.
+
 ### Async functions
+
+That just works. Simply provide an async function and return a promise:
+```javascript
+  fn: async () => Promise.resolve(...),
+```
+
 ### Multiple paths [TODO]

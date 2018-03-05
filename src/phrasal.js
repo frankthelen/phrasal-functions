@@ -1,10 +1,11 @@
 const phrasal = (options, config) => ({
   get: (target, prop) => { // trap
-    if (Object.prototype.hasOwnProperty.call(target, prop)) { // FIXME: only on level zero!
+    if (Object.prototype.hasOwnProperty.call(target, prop)) { // FIXME: do this only on level zero!
       return target[prop];
     }
     const { fn, bind = target, path } = config; // TODO: add multiple paths
-    const { key, values = [key] } = path[0]; // TODO: add dynamic values
+    const { key, values: val = [key] } = path[0];
+    const values = typeof val === 'function' ? val.bind(bind)(options) : val;
     if (values.includes(prop)) {
       const remaining = path.slice(1);
       if (!remaining.length) {
