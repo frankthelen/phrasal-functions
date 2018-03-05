@@ -86,7 +86,7 @@ const result = john.say.goodbye({ to: 'Joe' });
 ### Dynamic options
 
 In some cases, it is useful to create the syntax dynamically.
-This can be done by providing a function to `value` instead of an array of strings.
+This can be done by providing a function to `values` instead of an array of strings.
 The function, of course, has to return an array of strings.
 It gets the options as collected so far and has `this` bound properly (if applicable).
 
