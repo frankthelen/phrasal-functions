@@ -7,7 +7,7 @@ Decorate existing objects (proxy).
 [![Coverage Status](https://coveralls.io/repos/github/frankthelen/phrasal-functions/badge.svg?branch=master)](https://coveralls.io/github/frankthelen/phrasal-functions?branch=master)
 [![Dependency Status](https://gemnasium.com/badges/github.com/frankthelen/phrasal-functions.svg)](https://gemnasium.com/github.com/frankthelen/phrasal-functions)
 [![Greenkeeper badge](https://badges.greenkeeper.io/frankthelen/phrasal-functions.svg)](https://greenkeeper.io/)
-[![Maintainability](https://api.codeclimate.com/v1/badges/2b21f79b2657870c146f/maintainability)](https://codeclimate.com/github/frankthelen/phrasal-functions/maintainability)
+[![Maintainability](https://api.codeclimate.com/v1/badges/25b61ef7569593524e66/maintainability)](https://codeclimate.com/github/frankthelen/phrasal-functions/maintainability)
 [![node](https://img.shields.io/node/v/phrasal-functions.svg)]()
 [![code style](https://img.shields.io/badge/code_style-airbnb-brightgreen.svg)](https://github.com/airbnb/javascript)
 [![License Status](http://img.shields.io/npm/l/phrasal-functions.svg)]()
