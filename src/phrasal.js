@@ -29,10 +29,10 @@ const phrasal = (level, options, configs) => ({
           : (...args) => fn.bind(bind)(newOptions, ...args);
       }
     }
-    if (typeof prop === 'string') {
-      throw new Error(`unknown term in phrasal function: ${prop}`);
+    if (level > 0 && typeof prop === 'string') {
+      throw new Error(`unknown word in phrasal function: "${prop}"`);
     }
-    return target[prop];
+    return target[prop]; // can be undefined
   },
 });
 

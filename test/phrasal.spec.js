@@ -33,10 +33,10 @@ describe('phrasal-functions', () => {
       expect(args).to.be.deep.equal([{ party: false }]);
     });
 
-    it('should call phrasal function and bind to "this"', () => {
+    it('should call phrasal function and explicitly bind to "this"', () => {
       class TestClass {
         constructor() {
-          this.foo = true;
+          this.foo = 'baz';
           this.make = phrasal({
             fn: this.test,
             bind: this,
@@ -47,7 +47,7 @@ describe('phrasal-functions', () => {
           });
         }
         test(options, ...args) {
-          return [options, args, this];
+          return [options, args, this.foo];
         }
       }
       const obj = new TestClass();
@@ -56,7 +56,7 @@ describe('phrasal-functions', () => {
       const [options, args, bind] = result;
       expect(options).to.be.deep.equal({ who: 'my', what: 'day' });
       expect(args).to.be.deep.equal([{ party: true }]);
-      expect(bind).to.be.deep.equal({ foo: true, make: {} });
+      expect(bind).to.be.deep.equal('baz');
     });
 
     it('should create values dynamically if values is a function', () => {
@@ -102,7 +102,7 @@ describe('phrasal-functions', () => {
       expect(args2).to.be.deep.equal([{ foo: true }]);
     });
 
-    it('should throw error if unknown phrase', () => {
+    it('should throw error if unknown word', () => {
       const make = phrasal({
         fn: () => {}, // dummy
         path: [
@@ -110,10 +110,10 @@ describe('phrasal-functions', () => {
           { key: 'what', values: ['day', 'hour', 'minute'] },
         ],
       });
-      expect(() => make.my.tiny.day()).to.throw('unknown term in phrasal function: tiny');
+      expect(() => make.my.tiny.day()).to.throw('unknown word in phrasal function: "tiny"');
     });
 
-    it('should throw error if unknown phrase / start', () => {
+    it('should throw error if unknown word / first fragment does not match any path', () => {
       const make = phrasal({
         fn: () => {}, // dummy
         path: [
@@ -121,10 +121,10 @@ describe('phrasal-functions', () => {
           { key: 'what', values: ['day', 'hour', 'minute'] },
         ],
       });
-      expect(() => make.bla.my.tiny.day()).to.throw('unknown term in phrasal function: bla');
+      expect(() => make.bla.my.tiny.day()).to.throw('Cannot read property \'my\' of undefined');
     });
 
-    it('should throw error if unknown phrase / too long', () => {
+    it('should throw error if unknown word / extra last fragment', () => {
       const make = phrasal({
         fn: () => {}, // dummy
         path: [
@@ -137,33 +137,36 @@ describe('phrasal-functions', () => {
   });
 
   describe('proxy', () => {
-    it('should proxy object and bind implicitly to "this" / fix option', () => {
+    it('should proxy object and bind implicitly to "this" / class', () => {
       class TestClass {
         constructor() {
-          this.foo = true;
+          this.foo = 'baz';
+          this.qux = () => 'quux';
         }
         test(options, ...args) {
-          return [options, args, this];
+          return [options, args, this.foo, this.qux(), this.quux];
         }
       }
       const obj = new TestClass();
       const pxy = proxy(obj, {
         fn: obj.test,
         path: [
-          { key: 'make' },
+          { key: 'make' }, // fix option
           { key: 'who', values: ['my', 'your'] },
           { key: 'what', values: ['day', 'hour', 'minute'] },
         ],
       });
       const result = pxy.make.my.day({ party: true });
-      expect(result).to.have.lengthOf(3);
-      const [options, args, bind] = result;
+      expect(result).to.have.lengthOf(5);
+      const [options, args, bind, bind2, bind3] = result;
       expect(options).to.be.deep.equal({ make: 'make', who: 'my', what: 'day' });
       expect(args).to.be.deep.equal([{ party: true }]);
-      expect(bind).to.be.deep.equal({ foo: true });
+      expect(bind).to.be.deep.equal('baz');
+      expect(bind2).to.be.deep.equal('quux');
+      expect(bind3).to.be.undefined;
     });
 
-    it('should proxy object and bind implicitly to "this" / fix option / 2', () => {
+    it('should proxy object and bind implicitly to "this" / function', () => {
       const obj = { name: 'John' };
       const john = proxy(obj, {
         fn: function (options, arg) { // eslint-disable-line object-shorthand, func-names
@@ -176,6 +179,7 @@ describe('phrasal-functions', () => {
       });
       const result = john.say.goodbye({ to: 'Joe' });
       expect(result).to.be.deep.equal({ who: 'John', say: 'say', what: 'goodbye', to: 'Joe' });
+      expect(john).to.be.deep.equal({ name: 'John' });
     });
 
     it('should proxy object but prefer own property', () => {
