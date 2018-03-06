@@ -108,6 +108,7 @@ const my = phrasal({
         (animal === 'dog' ? ['barking', 'chewing', 'playing'] : ['purring', 'playing']) },
   ],
 });
+
 my.dog.is.chewing();
 my.cat.is.purring();
 ```
@@ -152,6 +153,7 @@ const my = phrasal({
     { key: 'action', values: ['purring', 'playing'] },
   ],
 });
+
 my.dog.is.chewing();
 my.cat.is.purring();
 ```
