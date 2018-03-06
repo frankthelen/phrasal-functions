@@ -76,6 +76,28 @@ describe('phrasal-functions', () => {
       expect(options2).to.be.deep.equal({ animal: 'cat', is: 'is', action: 'purring' });
       expect(() => my.dog.is.purring()).to.throw(Error);
     });
+
+    it('should throw error if unknown phrase', () => {
+      const make = phrasal({
+        fn: () => {}, // dummy
+        path: [
+          { key: 'who', values: ['my', 'your'] },
+          { key: 'what', values: ['day', 'hour', 'minute'] },
+        ],
+      });
+      expect(() => make.my.tiny.day()).to.throw('unknown term in phrasal function: tiny');
+    });
+
+    it('should throw error if unknown phrase / too long', () => {
+      const make = phrasal({
+        fn: () => {}, // dummy
+        path: [
+          { key: 'who', values: ['my', 'your'] },
+          { key: 'what', values: ['day', 'hour', 'minute'] },
+        ],
+      });
+      expect(() => make.my.day.today()).to.throw('make.my.day.today is not a function');
+    });
   });
 
   describe('proxy', () => {
