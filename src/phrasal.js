@@ -15,33 +15,17 @@ const evaluate = (options, config, target, prop) => {
   return false; // no match
 };
 
-const phrasal = (options, config) => ({
+const phrasal = (level, options, configs) => ({
   get: (target, prop) => { // trap
-    const next = evaluate(options, config, target, prop);
-    if (next) {
-      const { fn, bind, options: newOptions, config: newConfig, further } = next;
-      return further
-        ? new Proxy(target, phrasal(newOptions, newConfig))
-        : (...args) => fn.bind(bind)(newOptions, ...args);
-    }
-    if (typeof prop === 'string') {
-      throw new Error(`unknown term in phrasal function: ${prop}`);
-    }
-    return target[prop];
-  },
-});
-
-const phrasalMulti = configs => ({
-  get: (target, prop) => { // trap
-    if (Object.prototype.hasOwnProperty.call(target, prop)) { // only on level 0
+    if (level === 0 && Object.prototype.hasOwnProperty.call(target, prop)) {
       return target[prop];
     }
     for (const config of configs) { // eslint-disable-line no-restricted-syntax
-      const next = evaluate({}, config, target, prop);
+      const next = evaluate(options, config, target, prop);
       if (next) {
         const { fn, bind, options: newOptions, config: newConfig, further } = next;
         return further
-          ? new Proxy(target, phrasal(newOptions, newConfig))
+          ? new Proxy(target, phrasal(level + 1, newOptions, [newConfig]))
           : (...args) => fn.bind(bind)(newOptions, ...args);
       }
     }
@@ -52,4 +36,4 @@ const phrasalMulti = configs => ({
   },
 });
 
-module.exports = (target, configs) => new Proxy(target, phrasalMulti(configs));
+module.exports = (target, configs) => new Proxy(target, phrasal(0, {}, configs));
