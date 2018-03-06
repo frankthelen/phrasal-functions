@@ -77,6 +77,31 @@ describe('phrasal-functions', () => {
       expect(() => my.dog.is.purring()).to.throw(Error);
     });
 
+    it('should support multiple paths', () => {
+      const make = phrasal({
+        fn: (options, ...args) => ['1', options, args],
+        path: [
+          { key: 'who', values: ['my', 'your'] },
+          { key: 'what', values: ['day', 'hour', 'minute'] },
+        ],
+      }, {
+        fn: (options, ...args) => ['2', options, args],
+        path: [
+          { key: 'foo', values: ['bar', 'baz'] },
+        ],
+      });
+      const result = make.your.hour({ party: true });
+      const [id, options, args] = result;
+      expect(id).to.be.equal('1');
+      expect(options).to.be.deep.equal({ who: 'your', what: 'hour' });
+      expect(args).to.be.deep.equal([{ party: true }]);
+      const result2 = make.baz({ foo: true });
+      const [id2, options2, args2] = result2;
+      expect(id2).to.be.equal('2');
+      expect(options2).to.be.deep.equal({ foo: 'baz' });
+      expect(args2).to.be.deep.equal([{ foo: true }]);
+    });
+
     it('should throw error if unknown phrase', () => {
       const make = phrasal({
         fn: () => {}, // dummy
@@ -86,6 +111,17 @@ describe('phrasal-functions', () => {
         ],
       });
       expect(() => make.my.tiny.day()).to.throw('unknown term in phrasal function: tiny');
+    });
+
+    it('should throw error if unknown phrase / start', () => {
+      const make = phrasal({
+        fn: () => {}, // dummy
+        path: [
+          { key: 'who', values: ['my', 'your'] },
+          { key: 'what', values: ['day', 'hour', 'minute'] },
+        ],
+      });
+      expect(() => make.bla.my.tiny.day()).to.throw('unknown term in phrasal function: bla');
     });
 
     it('should throw error if unknown phrase / too long', () => {

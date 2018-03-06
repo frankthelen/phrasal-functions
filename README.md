@@ -123,4 +123,31 @@ const my = phrasal({
 await my.phrasal.fun();
 ```
 
-### Multiple paths [TODO]
+### Multiple paths
+
+You can also provide multiple phrasal functions at the same time.
+The first matching path wins, i.e., their first fragment decide which path is taken.
+
+```javascript
+const { phrasal } = require('phrasal-functions');
+
+const fn = (options, ...args) => { ... };
+
+const my = phrasal({
+  fn, // could also be an extra handler just for dogs
+  path: [
+    { key: 'animal', values: ['dog'] },
+    { key: 'is' },
+    { key: 'action', values: ['barking', 'chewing', 'playing'] },
+  ],
+}, {
+  fn, // could also be an extra handler just for cats
+  path: [
+    { key: 'animal', values: ['cat'] },
+    { key: 'is' },
+    { key: 'action', values: ['purring', 'playing'] },
+  ],
+});
+my.dog.is.chewing();
+my.cat.is.purring();
+```
