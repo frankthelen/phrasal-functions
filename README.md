@@ -1,7 +1,6 @@
 # phrasal-functions
 
 Functions with chained, fluent options.
-Decorate existing objects (proxy).
 
 [![Build Status](https://travis-ci.org/frankthelen/phrasal-functions.svg?branch=master)](https://travis-ci.org/frankthelen/phrasal-functions)
 [![Coverage Status](https://coveralls.io/repos/github/frankthelen/phrasal-functions/badge.svg?branch=master)](https://coveralls.io/github/frankthelen/phrasal-functions?branch=master)
@@ -62,7 +61,7 @@ const result = make.my.day({ party: true });
 You can also decorate (proxy) an existing object with a phrasal function.
 Use `proxy` for that purpose with the object as first argument.
 The function `fn` will implicitly have `this` bound to the proxied object
-(unless you use an ES6 arrow function which don't have `this` by definition).
+(unless you use an ES6 arrow function which doesn't have `this` by definition).
 To explicitly change `this` to another object, you may provide a `bind` property with the desired object.
 
 ```javascript
@@ -84,8 +83,8 @@ const result = john.say.goodbye({ to: 'Joe' });
 // -> { who: 'John', say: 'say', what: 'goodbye', to: 'Joe' }
 ```
 
-`{ key: 'say' }` in the example above is a *fix option*.
-It's a shorthand for, e.g., `{ key: 'say', values: ['say'] }`.
+`{ key: 'say' }` in the example above is a *fix option*
+which is a shorthand for `{ key: 'say', values: ['say'] }`.
 
 ### Dynamic options
 
@@ -93,7 +92,7 @@ In some cases, it is useful to create syntax elements dynamically.
 This can be done by providing a function to `values` instead of an array of strings.
 The function, of course, has to return an array of strings.
 It gets the options as collected so far and has `this` bound properly
-(unless you use an ES6 arrow function which don't have `this` by definition).
+(unless you use an ES6 arrow function which doesn't have `this` by definition).
 
 ```javascript
 const { phrasal } = require('phrasal-functions');
@@ -113,13 +112,13 @@ my.dog.is.chewing();
 my.cat.is.purring();
 ```
 
-`{ key: 'is' }` in the example above is a *fix option*.
-It's a shorthand for, e.g., `{ key: 'is', values: ['is'] }`.
+`{ key: 'is' }` in the example above is a *fix option*
+which is a shorthand for `{ key: 'is', values: ['is'] }`.
 
 ### Async functions
 
-`fn` can also be an `async` function that returns a promise.
-Simply use `await` when calling the phrasal function:
+`fn` can also be an `async` function returning a promise.
+Consequently, use `await` when calling the phrasal function:
 ```javascript
 const my = phrasal({
   fn: async () => Promise.resolve(...),
@@ -131,7 +130,7 @@ await my.phrasal.fun();
 ### Multiple paths
 
 You can also provide multiple phrasal functions at the same time.
-The first matching path wins, i.e., their first fragments decide which path is taken.
+The first matching path wins, i.e., the first fragments decide which path is taken.
 
 ```javascript
 const { phrasal } = require('phrasal-functions');
