@@ -134,6 +134,97 @@ describe('phrasal-functions', () => {
       });
       expect(() => make.my.day.today()).to.throw('make.my.day.today is not a function');
     });
+
+    it('should ignore floating elements if not provided', () => {
+      const make = phrasal({
+        fn: (options, ...args) => [options, args],
+        path: [
+          { key: 'who', values: ['my', 'your'] },
+          { key: 'what', values: ['day', 'hour', 'minute'] },
+        ],
+        floating: [
+          { key: 'not' },
+        ],
+      });
+      const result = make.my.day({ party: true });
+      expect(result).to.have.lengthOf(2);
+      const [options, args] = result;
+      expect(options).to.be.deep.equal({ who: 'my', what: 'day' });
+      expect(args).to.be.deep.equal([{ party: true }]);
+    });
+
+    it('should accept floating element at position 0 / fixed', () => {
+      const make = phrasal({
+        fn: (options, ...args) => [options, args],
+        path: [
+          { key: 'who', values: ['my', 'your'] },
+          { key: 'what', values: ['day', 'hour', 'minute'] },
+        ],
+        floating: [
+          { key: 'not' },
+        ],
+      });
+      const result = make.not.my.day({ party: true });
+      expect(result).to.have.lengthOf(2);
+      const [options, args] = result;
+      expect(options).to.be.deep.equal({ not: 'not', who: 'my', what: 'day' });
+      expect(args).to.be.deep.equal([{ party: true }]);
+    });
+
+    it('should accept floating element at position 1 / static values', () => {
+      const make = phrasal({
+        fn: (options, ...args) => [options, args],
+        path: [
+          { key: 'who', values: ['my', 'your'] },
+          { key: 'what', values: ['day', 'hour', 'minute'] },
+        ],
+        floating: [
+          { key: 'not', values: ['not', 'no'] },
+        ],
+      });
+      const result = make.my.no.day({ party: true });
+      expect(result).to.have.lengthOf(2);
+      const [options, args] = result;
+      expect(options).to.be.deep.equal({ not: 'no', who: 'my', what: 'day' });
+      expect(args).to.be.deep.equal([{ party: true }]);
+    });
+
+    it('should accept floating fixed element with dynamic options', () => {
+      const make = phrasal({
+        fn: (options, ...args) => [options, args],
+        path: [
+          { key: 'who', values: ['my', 'your'] },
+          { key: 'what', values: ['day', 'hour', 'minute'] },
+        ],
+        floating: [
+          { key: 'not', values: () => ['not', 'no', 'none'] },
+        ],
+      });
+      const result = make.my.none.day({ party: true });
+      expect(result).to.have.lengthOf(2);
+      const [options, args] = result;
+      expect(options).to.be.deep.equal({ not: 'none', who: 'my', what: 'day' });
+      expect(args).to.be.deep.equal([{ party: true }]);
+    });
+
+    it('should accept multiple floating elements', () => {
+      const make = phrasal({
+        fn: (options, ...args) => [options, args],
+        path: [
+          { key: 'who', values: ['my', 'your'] },
+          { key: 'what', values: ['day', 'hour', 'minute'] },
+        ],
+        floating: [
+          { key: 'not', values: () => ['not', 'no', 'none'] },
+          { key: 'to' },
+        ],
+      });
+      const result = make.not.to.my.day({ party: true });
+      expect(result).to.have.lengthOf(2);
+      const [options, args] = result;
+      expect(options).to.be.deep.equal({ not: 'not', to: 'to', who: 'my', what: 'day' });
+      expect(args).to.be.deep.equal([{ party: true }]);
+    });
   });
 
   describe('proxy', () => {

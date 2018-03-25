@@ -115,6 +115,35 @@ my.cat.is.purring();
 `{ key: 'is' }` in the example above is a *fix option*
 which is a shorthand for `{ key: 'is', values: ['is'] }`.
 
+### Floating elements
+
+A phrasal function's `path` elements describe a fixed syntax, i.e., all the path elements have to be provided in exactly this order when calling the phrasal function.
+In addition, you can specify floating elements which may occur optionally at any position (except the last) in the call of the phrasal function.
+
+```javascript
+const { proxy } = require('phrasal-functions');
+
+const john = phrasal({
+  fn: function (options, arg) {
+    return { ...options, ...arg };
+  },
+  path: [
+    { key: 'say', values: ['say', 'shout', 'yell', 'scream'] },
+    { key: 'what', values: ['hello', 'goodbye', 'boo'] },
+  ],
+  floating: [
+    { key: 'not' },
+  ],
+});
+
+john.say.goodbye({ to: 'Joe' });
+// -> { say: 'say', what: 'goodbye', to: 'Joe' }
+john.not.scream.boo({ to: 'Joe' });
+// -> { not: 'not', say: 'scream', what: 'boo', to: 'Joe' }
+john.yell.not.hello({ to: 'Joe' });
+// -> { not: 'not', say: 'yell', what: 'hello', to: 'Joe' }
+```
+
 ### Async functions
 
 `fn` can also be an `async` function returning a promise.

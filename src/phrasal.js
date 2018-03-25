@@ -1,18 +1,38 @@
+const getValues = ({ values, bind, options }) =>
+  (typeof values === 'function' ? values.bind(bind)(options) : values);
+
 const evaluate = (options, config, target, prop) => {
-  const { fn, bind = target, path } = config;
+  const { fn, bind = target, path, floating = [] } = config;
+  // 1. next path element
   const { key, values: val = [key] } = path[0]; // next
-  const values = typeof val === 'function' ? val.bind(bind)(options) : val;
+  const values = getValues({ values: val, bind, options });
   if (values.includes(prop)) {
     const remaining = path.slice(1);
     return {
       fn,
       bind,
       options: { ...options, [key]: prop },
-      config: { fn, bind, path: remaining },
+      config: { fn, bind, path: remaining, floating },
       further: remaining.length > 0,
     };
   }
-  return false; // no match
+  // 2. floating elements
+  const fOption = floating.reduce((acc, { key: fKey, values: fVal = [fKey] }) => {
+    if (acc) return acc;
+    const fValues = getValues({ values: fVal, bind, options });
+    return fValues.includes(prop) ? { [fKey]: prop } : false;
+  }, false);
+  if (fOption) {
+    return {
+      fn,
+      bind,
+      options: { ...options, ...fOption },
+      config: { fn, bind, path, floating },
+      further: true,
+    };
+  }
+  // 3. no match
+  return false;
 };
 
 const phrasal = (level, options, configs) => ({
