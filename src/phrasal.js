@@ -1,5 +1,6 @@
-const getValues = ({ values, bind, options }) =>
-  (typeof values === 'function' ? values.bind(bind)(options) : values);
+const getValues = ({ values, bind, options }) => (
+  typeof values === 'function' ? values.bind(bind)(options) : values
+);
 
 const evaluate = (options, config, target, prop) => {
   const { fn, bind = target, path, floating = [] } = config;

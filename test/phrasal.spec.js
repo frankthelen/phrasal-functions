@@ -46,6 +46,7 @@ describe('phrasal-functions', () => {
             ],
           });
         }
+
         test(options, ...args) {
           return [options, args, this.foo];
         }
@@ -66,8 +67,9 @@ describe('phrasal-functions', () => {
           { key: 'animal', values: ['dog', 'cat'] },
           { key: 'is' },
           { key: 'action',
-            values: ({ animal }) =>
-              (animal === 'dog' ? ['barking', 'chewing', 'playing'] : ['purring', 'playing']) },
+            values: ({ animal }) => (
+              animal === 'dog' ? ['barking', 'chewing', 'playing'] : ['purring', 'playing']
+            ) },
         ],
       });
       const [options] = my.dog.is.chewing();
@@ -234,6 +236,7 @@ describe('phrasal-functions', () => {
           this.foo = 'baz';
           this.qux = () => 'quux';
         }
+
         test(options, ...args) {
           return [options, args, this.foo, this.qux(), this.quux];
         }
