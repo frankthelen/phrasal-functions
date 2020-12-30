@@ -4,7 +4,6 @@ Functions with chained, fluent options.
 
 [![Build Status](https://travis-ci.org/frankthelen/phrasal-functions.svg?branch=master)](https://travis-ci.org/frankthelen/phrasal-functions)
 [![Coverage Status](https://coveralls.io/repos/github/frankthelen/phrasal-functions/badge.svg?branch=master)](https://coveralls.io/github/frankthelen/phrasal-functions?branch=master)
-[![Greenkeeper badge](https://badges.greenkeeper.io/frankthelen/phrasal-functions.svg)](https://greenkeeper.io/)
 [![Maintainability](https://api.codeclimate.com/v1/badges/25b61ef7569593524e66/maintainability)](https://codeclimate.com/github/frankthelen/phrasal-functions/maintainability)
 [![node](https://img.shields.io/node/v/phrasal-functions.svg)]()
 [![code style](https://img.shields.io/badge/code_style-airbnb-brightgreen.svg)](https://github.com/airbnb/javascript)
@@ -19,6 +18,7 @@ npm install phrasal-functions
 ## Usage
 
 A quick example.
+
 ```javascript
 const { phrasal } = require('phrasal-functions');
 
@@ -35,6 +35,7 @@ make.my.day({ party: true });
 ```
 
 ## Features
+
 ### Phrasal function
 
 Create functions that are called like real language phrases.
@@ -147,6 +148,7 @@ john.yell.not.hello({ to: 'Joe' });
 
 `fn` can also be an `async` function returning a promise.
 Consequently, use `await` when calling the phrasal function:
+
 ```javascript
 const my = phrasal({
   fn: async () => Promise.resolve(...),
